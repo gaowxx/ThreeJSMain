@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<title>1-2</title>
+		<style>canvas { width: 100%; height: 100% }</style>
+		<script src="js/three.js"></script>
+	</head>
+	<body>
+
+		<script>
+			// 1. 创建场景和摄像机
+			var scene = new THREE.Scene();
+
+			// 2. 创建摄像机
+			// 参数：1.视角 2.指投影窗口的长宽比 3.表示从距离摄像机多远的位置开始渲染 4.表示距离摄像机多远的位置截止渲染 1000
+			// const camera = new THREE.PerspectiveCamera("视角", "指投影窗口的长宽比", "表示从距离摄像机多远的位置开始渲染", "表示距离摄像机多远的位置截止渲染 1000" )
+			var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
+
+			// 3. 创建ThreeJs渲染器
+			var renderer = new THREE.WebGLRenderer();
+			// 设置渲染器场景的大小
+			// 参数：1.宽度 2.高度
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			// 把渲染器添加到我们的页面中去,渲染器初始化建立好后是游离在dom之外的，需要append到页面里去
+			document.body.appendChild(renderer.domElement);
+
+			// 4.1 创建基础几何模型
+			// const geometry = new THREE.BoxGeometry("x轴的长","y轴的长","z轴的长")
+			var geometry = new THREE.CubeGeometry(1, 1, 1);
+
+			// 4.2 创建材质
+			var material = new THREE.MeshBasicMaterial({
+				color: 0x00ff00
+			});
+
+			// 4. 创建网格对象，现在需要把材质material和几何体geometry结合起来展示，把材质添加到几何体当中
+			var cube = new THREE.Mesh(geometry, material)
+			// 把网格对象cube添加到场景中去
+			scene.add(cube);			
+
+			// 5. 摄像机空间Z轴位置
+			// 对摄像机的z轴做下拉伸，不然靠太近了就看不见
+			camera.position.z = 5
+
+			// 6. 添加渲染函数
+			function render() {
+				requestAnimationFrame(render);
+
+				cube.rotation.x += 0.01
+				cube.rotation.y += 0.01
+
+				renderer.render(scene, camera);
+			}
+
+			render();
+		</script>
+	</body>
+</html>

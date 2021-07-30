@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Three框架</title>
+		<script src="js/Three.js" data-ke-src="js/Three.js"></script>
+		<style type="text/css">
+			div#canvas-frame {
+				border: none;
+				cursor: pointer;
+				width: 100%;
+				height: 600px;
+				background-color: #EEEEEE;
+			}
+		</style>
+		<script>
+			// 初始化渲染器
+			var renderer;
+
+			function initThree() {
+				// 得到容器宽高
+				width = document.getElementById('canvas-frame').clientWidth;
+				height = document.getElementById('canvas-frame').clientHeight;
+				// 初始化渲染器
+				renderer = new THREE.WebGLRenderer({
+					// 抗锯齿
+					antialias: true
+				});
+				// 渲染器大小
+				renderer.setSize(width, height);
+				// 把render加到div中
+				document.getElementById('canvas-frame').appendChild(renderer.domElement);
+				// 清除画板，每次刷新完会用0xFFFFFF这个颜色重新粉刷一次屏幕，避免图形重叠
+				renderer.setClearColor(0xffffff, 1.0);
+			}
+
+			// 初始化相机
+			var camera;
+
+			function initCamera() {
+				// 1.视角 2.指投影窗口的长宽比 3.表示从距离摄像机多远的位置开始渲染 4.表示距离摄像机多远的位置截止渲染
+				camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
+				camera.position.x = 0;
+				camera.position.y = 0;
+				camera.position.z = 1000;
+			}
+
+			// 初始化场景
+			var scene;
+
+			function initScene() {
+				scene = new THREE.Scene();
+			}
+
+			// 初始化灯光
+			var light;
+
+			function initLight() {
+				light = new THREE.DirectionalLight(0xFF0000, 1.0, 0);
+				light.position.set(100, 100, 200);
+				scene.add(light);
+			}
+
+			// 初始化对象
+			var cube;
+
+			function initObject() {
+
+				var geometry = new THREE.Geometry();
+				// vertexColors: THREE.VertexColors
+				// 不使用顶点的颜色就会使用color的颜色
+				// vertexColors: false
+				// 也可以使用自己的颜色 color: 0x00ff00
+				var material = new THREE.LineBasicMaterial({
+					vertexColors: THREE.VertexColors
+					// color: 0x00ff00
+				});
+				var color1 = new THREE.Color(0x444444),
+					color2 = new THREE.Color(0xFF0000),
+					color3 = new THREE.Color(0x00FF00);
+
+				// 线的材质可以由2点的颜色决定
+				var p1 = new THREE.Vector3(-100, 0, 100);
+				var p2 = new THREE.Vector3(100, 0, 0);
+				var p3 = new THREE.Vector3(0, -100, 0);
+				
+				// 第1种画法
+				// geometry.vertices.push(p1);
+				// geometry.vertices.push(p2);
+				
+				// geometry.vertices.push(p2);
+				// geometry.vertices.push(p3);				
+				
+				// geometry.vertices.push(p3);
+				// geometry.vertices.push(p1);
+				
+				// geometry.colors.push(color1, color2, color3,color1, color2, color3);
+				// var line = new THREE.LineSegments(geometry, material, THREE.LinePieces);
+				
+				// 第2种画法 有点问题，需要去百度看下
+				geometry.vertices.push(p1);
+				geometry.vertices.push(p2);
+				geometry.vertices.push(p3);
+				geometry.vertices.push(p1);
+				geometry.colors.push(color1, color2, color3);
+				var line = new THREE.LineSegments(geometry, material, THREE.LineStrip);
+				scene.add(line);
+			}
+
+			function render() {
+				renderer.clear();
+				renderer.render(scene, camera);
+				requestAnimationFrame(render);
+			}
+
+			function threeStart() {
+				initThree();
+				initCamera();
+				initScene();
+				initLight();
+				initObject();
+				render();
+			}
+		</script>
+	</head>
+
+	<body onload="threeStart();">
+		<div id="canvas-frame"></div>
+	</body>
+</html>
